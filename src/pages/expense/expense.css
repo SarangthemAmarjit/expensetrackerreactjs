@@ -1,0 +1,16 @@
+.expensecontainer1{
+    
+    justify-content: space-between;
+}
+
+.btn-outline-primary{
+    font-size: 13px;
+}
+
+.table{
+    
+    border-radius: 15px;
+    background-color: rgba(168, 194, 109, 0.2);
+    margin-top: 15px
+
+}

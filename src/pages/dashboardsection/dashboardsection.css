@@ -1,0 +1,36 @@
+.dashcontainer {
+
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.big-icon {
+    font-size: 30px;
+    color: rgb(1, 42, 73)
+        /* ensures image doesn’t stretch */
+
+
+}
+
+.dashcontainer2 {
+    gap: 30px;
+    width: 100%;
+margin-top: 15px;
+
+}
+
+.card {
+    background-color: rgba(245, 217, 165, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* grow from the center */
+}
+
+.card:hover {
+    border-color: rgb(161, 192, 241);
+    transform: scale(1);
+    box-shadow: 0 6px 18px rgba(69, 96, 76, 0.2);
+}

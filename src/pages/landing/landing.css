@@ -1,0 +1,97 @@
+.container1 {
+
+  width: 90vw;
+  height: 90vh;
+  background-color: rgb(250, 249, 247);
+  display: flex;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 9, 128, 0.3);
+  /* hides the scrollbar issue */
+}
+
+.btn-outline-primary:hover {
+  background-color: rgb(143, 235, 169);
+}
+
+.mainpage {
+  margin: 20px;
+  width: 100%;
+}
+
+.container{
+margin: 0;
+  
+  align-items: center; 
+  justify-content: center;
+
+  
+  /* centers horizontally */
+
+}
+
+.innercontainer {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+
+  width: 20%;
+  background-color: rgba(2, 6, 126, 0.4);
+}
+
+.menulist {
+  display: flex;
+  flex-direction: column;
+  /* vertical menu */
+  gap: 10px;
+  padding: 10px;
+}
+
+.mainpage {
+  margin: 20px;
+  width: 100%;
+}
+
+.menu-item {
+  color: #000839;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+
+  border: 1px solid #f5f2f2;
+}
+
+.custom-confirm-dialog .p-dialog-content {
+  padding: 20px;
+  font-size: 1rem;
+}
+
+
+.menu-item.active {
+
+  background-color: rgb(227, 250, 207);
+}
+
+.iconclass.active {
+  color: rgb(7, 117, 32);
+}
+
+
+
+.innercontainer label {
+
+  margin: 15px;
+  color: #f5f2f2;
+  font-weight: bold;
+  font-size: 20px;
+}
