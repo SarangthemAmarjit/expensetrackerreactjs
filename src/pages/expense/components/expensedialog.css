@@ -1,8 +1,14 @@
 .form {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+
+
+.p-dropdown-items {
+    padding-left: 0 !important;
 }
 

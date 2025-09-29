@@ -1,15 +1,12 @@
 // import React, { useState } from "react";
 
 import { Dialog } from "primereact/dialog";
+import { Dropdown } from 'primereact/dropdown';
+import { useState } from "react";
+import "./expensedialog.css"; // ensure the path is correct
 
-// // Expense categories (like Angular version)
-// const expenseCategories = [
-//   { name: "Electric Bill" },
-//   { name: "Water Bill" },
-//   { name: "Mobile Recharge" },
-//   { name: "Grocery Items" },
-//   { name: "Clothes" },
-// ];
+// Expense categories (like Angular version)
+
 
 // interface AddExpenseDialogProps {
 //   onCancel: () => void;
@@ -22,23 +19,7 @@ import { Dialog } from "primereact/dialog";
 // }
 
 // export default function AddExpenseDialog({ onCancel, onConfirm }: AddExpenseDialogProps) {
-//   const [form, setForm] = useState({
-//     expenseDetails: "",
-//     amount: "",
-//     category: "",
-//     expenseDate: new Date().toISOString(), // default today
-//   });
 
-//   const [errors, setErrors] = useState({});
-
-//   // handle input changes
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setForm((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
 
 //   // form validation like Angular Validators
 //   const validate = () => {
@@ -127,27 +108,102 @@ type Props = {
   setVisible: (value: boolean) => void;
 };
 function ExpenseDialog({ isvis, setVisible }: Props) {
+
+  const expenseCategories = [
+    { name: "Electric Bill" },
+    { name: "Water Bill" },
+    { name: "Mobile Recharge" },
+    { name: "Grocery Items" },
+    { name: "Clothes" },
+  ];
+
+  const [form, setForm] = useState({
+    expenseDetails: "",
+    amount: "",
+    category: "",
+    expenseDate: new Date().toISOString(), // default today
+  });
+
+
+
+  // handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+
   return (
     <>
       <Dialog
         draggable={false}
         header="Add New Expense"
         visible={isvis}
-        style={{ width: "50vw" }}
+        style={{ width: "30vw" }}
         onHide={() => {
           if (!isvis) return;
           setVisible(false);
         }}
       >
-        <p className="m-0">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
+        <form className="form" >
+          {/* Expense details */}
+          <input
+            className="form-control"
+            placeholder="Enter Expense Details"
+            type="text"
+            name="expenseDetails"
+            value={form.expenseDetails}
+            onChange={handleChange}
+          />
+          {/* {errors.expenseDetails && (
+          <span className="text-danger">{errors.expenseDetails}</span>
+        )} */}
+
+          {/* Expense amount */}
+          <input
+            className="form-control"
+            placeholder="Enter Expense Amount"
+            type="number"
+            name="amount"
+            value={form.amount}
+            onChange={handleChange}
+          />
+
+
+
+
+
+
+
+          <Dropdown value={selectedCategory} onChange={(e) => setSelectedCategory(e.value)} options={expenseCategories} optionLabel="name"
+            placeholder="Select a Category" className="w-full md:w-14rem" />
+
+
+
+
+
+
+
+
+          <div style={{ marginTop: "20px" }}>
+            <button
+              type="button"
+              onClick={() => setVisible(false)}
+              style={{ marginRight: "10px" }}
+              className="btn btn-danger"
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-outline-primary">
+              Submit
+            </button>
+          </div>
+        </form>
       </Dialog>
       ;
     </>
