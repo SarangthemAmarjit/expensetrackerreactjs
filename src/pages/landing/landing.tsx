@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
 import "./landing.css"; // make sure the path is correct
 
 // import the specific icons you need
@@ -13,11 +12,13 @@ import {
   faTags,
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
+import { usePageStore } from "../../controller/pagecontontroller";
 import DashboardSection from "../dashboardsection/dashboardsection";
 import ExpenseSection from "../expense/expense";
 
 function LandingPage() {
-  const [pageIndex, setPageIndex] = useState(0);
+  const pageIndex = usePageStore((state) => state.pageIndex);
+  const setPageIndex = usePageStore((state) => state.setPageIndex);
 
   const menuItems = [
     { label: "Dashboard", icon: faHome },

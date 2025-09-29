@@ -19,7 +19,21 @@ export const getExpenseById = async (id: number) => {
 
 // POST (Add new expense)
 export const addExpense = async (expense: ExpenseModel) => {
-  const response = await axios.post(apiUrl, expense);
+  const response = await axios.post(
+    apiUrl,
+    {
+      expenseDetails: expense.expenseDetails,
+      category: expense.category,
+      amount: expense.amount,
+      expenseDate: expense.expenseDate ?? new Date().toISOString(),
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );
   return response.data;
 };
 

@@ -1,40 +1,35 @@
-import { useEffect, useState } from "react";
-import type { ExpenseModel } from "../../model/expensemodel";
-import { deleteExpense, getExpenses } from "../../services/expense";
+import { useEffect } from "react";
+import { usePageStore } from "../../controller/pagecontontroller";
 import ExpenseDialog from "./components/expensedialog";
 import "./expense.css"; // ensure the path is correct
 // import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 function ExpenseSection() {
-  const [expenses, setExpenses] = useState<ExpenseModel[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const {
+    loadExpenses,
+    expenses,
+    loading,
+    removeExpense,
+    isvisible,
+    setvisible,
+  } = usePageStore();
 
   // fetch all expenses on component mount
   useEffect(() => {
     loadExpenses();
   }, []);
 
-  const loadExpenses = async () => {
-    try {
-      setLoading(true);
-      const data = await getExpenses();
-      setExpenses(data);
-    } catch (err) {
-      console.error("Error fetching expenses:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteExpense = async (id: number) => {
-    try {
-      await deleteExpense(id);
-      loadExpenses(); // refresh list after delete
-    } catch (err) {
-      console.error("Error deleting expense:", err);
-    }
-  };
+  // const loadExpenses = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const data = await getExpenses();
+  //     setExpenses(data);
+  //   } catch (err) {
+  //     console.error("Error fetching expenses:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -42,12 +37,12 @@ function ExpenseSection() {
         <h4>Expenses</h4>
         <button
           className="btn btn-outline-primary"
-          onClick={() => setVisible(true)}
+          onClick={() => setvisible(true)}
         >
           {/* <FaPlus /> */} Add Expense
         </button>
       </div>
-      <ExpenseDialog isvis={visible} setVisible={setVisible} />
+      <ExpenseDialog />
       {loading ? (
         <div className="alert alert-info" role="alert">
           Loading expenses, please wait...
@@ -85,7 +80,7 @@ function ExpenseSection() {
                   </button>
                   <button
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => handleDeleteExpense(item.id!)}
+                    onClick={() => removeExpense(item.id!)}
                   >
                     {/* <FaTrash /> */} Delete
                   </button>
