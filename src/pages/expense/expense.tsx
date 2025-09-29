@@ -10,7 +10,7 @@ function ExpenseSection() {
     expenses,
     loading,
     removeExpense,
-    isvisible,
+   
     setvisible,
   } = usePageStore();
 
@@ -19,17 +19,6 @@ function ExpenseSection() {
     loadExpenses();
   }, []);
 
-  // const loadExpenses = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const data = await getExpenses();
-  //     setExpenses(data);
-  //   } catch (err) {
-  //     console.error("Error fetching expenses:", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <>

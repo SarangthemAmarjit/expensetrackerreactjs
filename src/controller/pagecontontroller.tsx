@@ -3,6 +3,8 @@ import type { ExpenseModel, FormErrors } from "../model/expensemodel";
 import { addExpense, deleteExpense, getExpenses } from "../services/expense";
 
 interface PageState {
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
   pageIndex: number;
   setPageIndex: (index: number) => void;
   setvisible: (visible: boolean) => void;
@@ -14,6 +16,7 @@ interface PageState {
   loading: boolean;
   isvisible: boolean;
   loadExpenses: () => Promise<void>;
+  handlechange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleSubmit: (e: React.FormEvent) => void;
   onconfirm: (form: ExpenseModel) => void;
   addExpense: (expense: ExpenseModel) => Promise<void>;
@@ -23,6 +26,8 @@ interface PageState {
 }
 
 export const usePageStore = create<PageState>((set, get) => ({
+  selectedCategory: "",
+  setSelectedCategory: (category) => set({ selectedCategory: category }),
   pageIndex: 0,
   expenses: [],
   loading: false,
@@ -50,8 +55,8 @@ export const usePageStore = create<PageState>((set, get) => ({
     }
   },
   // Add a method to modify the expenses list
-  updateExpense: async (id: number) => {},
-  addExpense: async (expense: ExpenseModel) => {},
+  updateExpense: async (id: number) => { },
+  addExpense: async (expense: ExpenseModel) => { },
 
   removeExpense: async (id: number) => {
     try {
@@ -81,6 +86,11 @@ export const usePageStore = create<PageState>((set, get) => ({
       get().setvisible(false);
     });
     console.log("Form submitted:", form);
+  },
+
+  handlechange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    set({form: { ...get().form, [name]: value } });
   },
 
   validate: () => {
