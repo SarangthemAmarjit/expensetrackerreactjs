@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { usePageStore } from "../../controller/pagecontontroller";
+import DeleteDialog from "./components/deletedialog";
 import ExpenseDialog from "./components/expensedialog";
 import "./expense.css"; // ensure the path is correct
 // import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
@@ -9,8 +10,8 @@ function ExpenseSection() {
     loadExpenses,
     expenses,
     loading,
-    removeExpense,
-   
+    setvisiblefordelete,
+
     setvisible,
   } = usePageStore();
 
@@ -18,7 +19,6 @@ function ExpenseSection() {
   useEffect(() => {
     loadExpenses();
   }, []);
-
 
   return (
     <>
@@ -31,6 +31,7 @@ function ExpenseSection() {
           {/* <FaPlus /> */} Add Expense
         </button>
       </div>
+      <DeleteDialog />
       <ExpenseDialog />
       {loading ? (
         <div className="alert alert-info" role="alert">
@@ -67,9 +68,10 @@ function ExpenseSection() {
                   >
                     {/* <FaEdit /> */} Edit
                   </button>
+
                   <button
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => removeExpense(item.id!)}
+                    onClick={() => setvisiblefordelete(true, item.id)} // open delete dialog)}
                   >
                     {/* <FaTrash /> */} Delete
                   </button>

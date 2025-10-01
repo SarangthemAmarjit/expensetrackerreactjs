@@ -7,15 +7,18 @@ import { expenseCategories } from "../../../constant/conts";
 import { usePageStore } from "../../../controller/pagecontontroller";
 import "./expensedialog.css"; // ensure the path is correct
 
-
-
 function ExpenseDialog() {
-  const { handlechange, selectedCategory, setSelectedCategory, isvisible, setvisible, form, setform, errors, handleSubmit } =
-    usePageStore();
-
-
-
-
+  const {
+    handlechange,
+    selectedCategory,
+    setSelectedCategory,
+    isvisible,
+    setvisible,
+    form,
+    setform,
+    errors,
+    handleSubmit,
+  } = usePageStore();
 
   return (
     <>
@@ -54,18 +57,18 @@ function ExpenseDialog() {
           {errors.amount && (
             <span className="text-danger">{errors.amount}</span>
           )}
-
           <Dropdown
-            value={selectedCategory}
-            onChange={function (e) {
-              setform((prev: any) => ({
-                ...prev,
-                category: e.value.name,
-              }));
-              return setSelectedCategory(e.value);
+            name="category"
+            value={form.category}
+            onChange={(e) => {
+              handlechange({
+                target: {
+                  name: "category",
+                  value: e.value, // Direct string value
+                },
+              });
             }}
             options={expenseCategories}
-            optionLabel="name"
             placeholder="Select a Category"
             className="w-full md:w-14rem"
           />
@@ -92,7 +95,6 @@ function ExpenseDialog() {
           </div>
         </form>
       </Dialog>
-      ;
     </>
   );
 }

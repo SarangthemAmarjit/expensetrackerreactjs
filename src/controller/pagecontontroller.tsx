@@ -3,11 +3,13 @@ import type { ExpenseModel, FormErrors } from "../model/expensemodel";
 import { addExpense, deleteExpense, getExpenses } from "../services/expense";
 
 interface PageState {
+  selectedexpenseId?: number;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
   pageIndex: number;
   setPageIndex: (index: number) => void;
   setvisible: (visible: boolean) => void;
+  setvisiblefordelete: (visible: boolean, id?: number) => void;
   setform: (form: any) => void;
   form: ExpenseModel;
   seterror: (errors: FormErrors) => void;
@@ -15,13 +17,17 @@ interface PageState {
   expenses: any[];
   loading: boolean;
   isvisible: boolean;
+  isvisiblefordelete: boolean;
   loadExpenses: () => Promise<void>;
-  handlechange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handlechange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | { target: { name: string; value: any } }
+  ) => void;
   handleSubmit: (e: React.FormEvent) => void;
   onconfirm: (form: ExpenseModel) => void;
-  addExpense: (expense: ExpenseModel) => Promise<void>;
   updateExpense: (id: number) => Promise<void>;
-  removeExpense: (id: number) => Promise<void>;
+  removeExpense: () => Promise<void>;
   validate: () => FormErrors;
 }
 
@@ -32,17 +38,27 @@ export const usePageStore = create<PageState>((set, get) => ({
   expenses: [],
   loading: false,
   isvisible: false,
+  isvisiblefordelete: false,
+
+  setvisiblefordelete: (visible: boolean, id?: number) => {
+    set({
+      isvisiblefordelete: visible,
+      selectedexpenseId: id,
+    });
+  },
+
   errors: {},
   form: {
     expenseDetails: "",
     amount: 0,
     category: "",
-    expenseDate: new Date().toISOString(), // default today
+    expenseDate: new Date().toISOString(),
   },
   setform: (form) => set({ form: form }),
 
   setPageIndex: (index) => set({ pageIndex: index }),
   setvisible: (visible) => set({ isvisible: visible }),
+
   loadExpenses: async () => {
     set({ loading: true });
     try {
@@ -54,14 +70,14 @@ export const usePageStore = create<PageState>((set, get) => ({
       set({ loading: false });
     }
   },
-  // Add a method to modify the expenses list
-  updateExpense: async (id: number) => { },
-  addExpense: async (expense: ExpenseModel) => { },
 
-  removeExpense: async (id: number) => {
+  updateExpense: async (id: number) => {},
+
+  removeExpense: async () => {
     try {
-      await deleteExpense(id);
-      await get().loadExpenses(); // refresh list after delete
+      await deleteExpense(get().selectedexpenseId!);
+      await get().loadExpenses();
+      set({ isvisiblefordelete: false });
     } catch (err) {
       console.error("Error deleting expense:", err);
     }
@@ -69,37 +85,69 @@ export const usePageStore = create<PageState>((set, get) => ({
 
   handleSubmit: (e: React.FormEvent) => {
     e.preventDefault();
-
     const validationErrors = get().validate();
     if (Object.keys(validationErrors).length > 0) {
-      get().seterror(validationErrors);
+      set({ errors: validationErrors }); // FIXED: Using set directly
     } else {
       console.log("Form is valid, submitting:", get().form);
-      get().onconfirm(get().form); // send data to parent
+      get().onconfirm(get().form);
     }
   },
 
   onconfirm: (form: ExpenseModel) => {
-    addExpense(form).then((response) => {
-      console.log("Expense added successfully:", response);
-      get().loadExpenses();
-      get().setvisible(false);
-    });
-    console.log("Form submitted:", form);
+    addExpense(form)
+      .then((response) => {
+        console.log("Expense added successfully:", response);
+        get().loadExpenses();
+        set({
+          isvisible: false,
+          errors: {}, // Clear errors on success
+          form: {
+            expenseDetails: "",
+            amount: 0,
+            category: "",
+            expenseDate: new Date().toISOString(),
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error adding expense:", error);
+      });
   },
 
-  handlechange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  // Then update the implementation
+  handlechange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | { target: { name: string; value: any } }
+  ) => {
     const { name, value } = e.target;
-    set({form: { ...get().form, [name]: value } });
+    set((state) => ({
+      form: { ...state.form, [name]: value },
+      errors: { ...state.errors, [name]: "" },
+    }));
+
+    console.log("Changed:", get().form);
   },
 
   validate: () => {
     let newErrors: FormErrors = {};
-    if (!get().form.expenseDetails.trim())
+    const { form } = get();
+
+    if (!form.expenseDetails?.trim()) {
       newErrors.expenseDetails = "Details required";
-    if (!get().form.amount || get().form.amount <= 0)
+    }
+
+    const amount =
+      typeof form.amount === "string" ? parseFloat(form.amount) : form.amount;
+    if (!form.amount || amount <= 0 || isNaN(amount)) {
       newErrors.amount = "Amount must be greater than 0";
-    // if (!selectedCategory) newErrors.category = "Category required";
+    }
+
+    if (!form.category?.trim()) {
+      newErrors.category = "Category required";
+    }
+
     return newErrors;
   },
 
