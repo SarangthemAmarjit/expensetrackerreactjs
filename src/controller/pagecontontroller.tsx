@@ -6,8 +6,8 @@ interface PageState {
   selectedexpenseId?: number;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
-  pageIndex: number;
-  setPageIndex: (index: number) => void;
+ 
+ 
   setvisible: (visible: boolean) => void;
   setvisiblefordelete: (visible: boolean, id?: number) => void;
   setform: (form: any) => void;
@@ -16,6 +16,7 @@ interface PageState {
   errors: FormErrors;
   expenses: any[];
   loading: boolean;
+  isservererror: boolean;
   isvisible: boolean;
   isvisiblefordelete: boolean;
   loadExpenses: () => Promise<void>;
@@ -31,10 +32,11 @@ interface PageState {
   validate: () => FormErrors;
 }
 
-export const usePageStore = create<PageState>((set, get) => ({
+export const expensecontroller = create<PageState>((set, get) => ({
+  isservererror: false,
   selectedCategory: "",
   setSelectedCategory: (category) => set({ selectedCategory: category }),
-  pageIndex: 0,
+
   expenses: [],
   loading: false,
   isvisible: false,
@@ -56,7 +58,7 @@ export const usePageStore = create<PageState>((set, get) => ({
   },
   setform: (form) => set({ form: form }),
 
-  setPageIndex: (index) => set({ pageIndex: index }),
+  
   setvisible: (visible) => set({ isvisible: visible }),
 
   loadExpenses: async () => {
@@ -66,17 +68,20 @@ export const usePageStore = create<PageState>((set, get) => ({
       set({ expenses: data });
     } catch (err) {
       console.error("Error fetching expenses:", err);
+      set({ loading: false });
+      set({ isservererror: true });
     } finally {
       set({ loading: false });
     }
   },
 
-  updateExpense: async (id: number) => {},
+  updateExpense: async (id: number) => { },
 
   removeExpense: async () => {
+    const { selectedexpenseId, loadExpenses } = get();
     try {
-      await deleteExpense(get().selectedexpenseId!);
-      await get().loadExpenses();
+      await deleteExpense(selectedexpenseId!);
+      await loadExpenses();
       set({ isvisiblefordelete: false });
     } catch (err) {
       console.error("Error deleting expense:", err);

@@ -4,32 +4,22 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 
 import { expenseCategories } from "../../../constant/conts";
-import { usePageStore } from "../../../controller/pagecontontroller";
+import { expensecontroller } from "../../../controller/pagecontontroller";
 import "./expensedialog.css"; // ensure the path is correct
 
 function ExpenseDialog() {
-  const {
-    handlechange,
-    selectedCategory,
-    setSelectedCategory,
-    isvisible,
-    setvisible,
-    form,
-    setform,
-    errors,
-    handleSubmit,
-  } = usePageStore();
+  const expensecon = expensecontroller();
 
   return (
     <>
       <Dialog
         draggable={false}
         header="Add New Expense"
-        visible={isvisible}
+        visible={expensecon.isvisible}
         style={{ width: "30vw" }}
         onHide={() => {
-          if (!isvisible) return;
-          setvisible(false);
+          if (!expensecon.isvisible) return;
+          expensecon.setvisible(false);
         }}
       >
         <form className="form">
@@ -39,11 +29,11 @@ function ExpenseDialog() {
             placeholder="Enter Expense Details"
             type="text"
             name="expenseDetails"
-            value={form.expenseDetails}
-            onChange={handlechange}
+            value={expensecon.form.expenseDetails}
+            onChange={expensecon.handlechange}
           />
-          {errors.expenseDetails && (
-            <span className="text-danger">{errors.expenseDetails}</span>
+          {expensecon.errors.expenseDetails && (
+            <span className="text-danger">{expensecon.errors.expenseDetails}</span>
           )}
 
           <input
@@ -51,35 +41,28 @@ function ExpenseDialog() {
             placeholder="Enter Expense Amount"
             type="number"
             name="amount"
-            value={form.amount}
-            onChange={handlechange}
+            value={expensecon.form.amount}
+            onChange={expensecon.handlechange}
           />
-          {errors.amount && (
-            <span className="text-danger">{errors.amount}</span>
+          {expensecon.errors.amount && (
+            <span className="text-danger">{expensecon.errors.amount}</span>
           )}
           <Dropdown
             name="category"
-            value={form.category}
-            onChange={(e) => {
-              handlechange({
-                target: {
-                  name: "category",
-                  value: e.value, // Direct string value
-                },
-              });
-            }}
+            value={expensecon.form.category}
+            onChange={expensecon.handlechange}
             options={expenseCategories}
             placeholder="Select a Category"
             className="w-full md:w-14rem"
           />
-          {errors.category && (
-            <span className="text-danger">{errors.category}</span>
+          {expensecon.errors.category && (
+            <span className="text-danger">{expensecon.errors.category}</span>
           )}
 
           <div style={{ marginTop: "20px" }}>
             <button
               type="button"
-              onClick={() => setvisible(false)}
+              onClick={() => expensecon.setvisible(false)}
               style={{ marginRight: "10px" }}
               className="btn btn-danger"
             >
@@ -87,7 +70,7 @@ function ExpenseDialog() {
             </button>
             <button
               type="submit"
-              onClick={handleSubmit}
+              onClick={expensecon.handleSubmit}
               className="btn btn-outline-primary"
             >
               Submit

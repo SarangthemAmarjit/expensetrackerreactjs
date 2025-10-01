@@ -2,23 +2,22 @@
 
 import { Dialog } from "primereact/dialog";
 
-import { usePageStore } from "../../../controller/pagecontontroller";
+import { expensecontroller } from "../../../controller/pagecontontroller";
 import "./expensedialog.css"; // ensure the path is correct
 
 function DeleteDialog() {
-  const { removeExpense, isvisiblefordelete, setvisiblefordelete } =
-    usePageStore();
+const expensecon = expensecontroller();
 
   return (
     <>
       <Dialog
         draggable={false}
         header="Confirm Delete Expense"
-        visible={isvisiblefordelete}
+        visible={expensecon.isvisiblefordelete}
         style={{ width: "25vw" }}
         onHide={() => {
-          if (!isvisiblefordelete) return;
-          setvisiblefordelete(false);
+          if (!expensecon.isvisiblefordelete) return;
+          expensecon.setvisiblefordelete(false);
         }}
       >
         <div className="p-3">
@@ -27,7 +26,7 @@ function DeleteDialog() {
           <div style={{ marginTop: "20px", textAlign: "right" }}>
             <button
               type="button"
-              onClick={() => setvisiblefordelete(false)}
+              onClick={() => expensecon.setvisiblefordelete(false)}
               style={{ marginRight: "10px" }}
               className="btn btn-secondary"
             >
@@ -35,7 +34,7 @@ function DeleteDialog() {
             </button>
             <button
               type="button"
-              onClick={() => removeExpense()} // call your delete logic here
+              onClick={() => expensecon.removeExpense()} // call your delete logic here
               className="btn btn-danger"
             >
               Delete

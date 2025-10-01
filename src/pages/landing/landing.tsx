@@ -12,13 +12,13 @@ import {
   faTags,
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
-import { usePageStore } from "../../controller/pagecontontroller";
+
 import DashboardSection from "../dashboardsection/dashboardsection";
 import ExpenseSection from "../expense/expense";
+import { landingcontroller } from "../../controller/landingcontroller";
 
 function LandingPage() {
-  const pageIndex = usePageStore((state) => state.pageIndex);
-  const setPageIndex = usePageStore((state) => state.setPageIndex);
+const landingcon = landingcontroller();
 
   const menuItems = [
     { label: "Dashboard", icon: faHome },
@@ -37,7 +37,7 @@ function LandingPage() {
         console.log("User logged out");
       }
     } else {
-      setPageIndex(i);
+      landingcon.setPageIndex(i);
     }
   };
 
@@ -51,11 +51,11 @@ function LandingPage() {
             {menuItems.map((item, i) => (
               <div
                 key={i}
-                className={`menu-item ${pageIndex === i ? "active" : ""}`}
+                className={`menu-item ${landingcon.pageIndex === i ? "active" : ""}`}
                 onClick={() => updatePage(i)}
               >
                 <FontAwesomeIcon
-                  className={`iconclassName ${pageIndex === i ? "active" : ""}`}
+                  className={`iconclassName ${landingcon.pageIndex === i ? "active" : ""}`}
                   icon={item.icon}
                 />
                 <span>{item.label}</span>
@@ -65,13 +65,13 @@ function LandingPage() {
         </div>
 
         <div className="mainpage">
-          {pageIndex === 0 && <DashboardSection />}
-          {pageIndex === 1 && <ExpenseSection />}
-          {pageIndex === 2 && <TransactionSection />}
-          {pageIndex === 3 && <CategorySection />}
-          {pageIndex === 4 && <ReportSection />}
-          {pageIndex === 5 && <BudgetSection />}
-          {pageIndex === 6 && <SettingSection />}
+          {landingcon.pageIndex === 0 && <DashboardSection />}
+          {landingcon.pageIndex === 1 && <ExpenseSection />}
+          {landingcon.pageIndex === 2 && <TransactionSection />}
+          {landingcon.pageIndex === 3 && <CategorySection />}
+          {landingcon.pageIndex === 4 && <ReportSection />}
+          {landingcon.pageIndex === 5 && <BudgetSection />}
+          {landingcon.pageIndex === 6 && <SettingSection />}
         </div>
       </div>
     </div>

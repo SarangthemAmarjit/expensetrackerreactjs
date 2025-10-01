@@ -1,23 +1,17 @@
 import { useEffect } from "react";
-import { usePageStore } from "../../controller/pagecontontroller";
+import { expensecontroller } from "../../controller/pagecontontroller";
 import DeleteDialog from "./components/deletedialog";
 import ExpenseDialog from "./components/expensedialog";
 import "./expense.css"; // ensure the path is correct
 // import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 function ExpenseSection() {
-  const {
-    loadExpenses,
-    expenses,
-    loading,
-    setvisiblefordelete,
-
-    setvisible,
-  } = usePageStore();
+const expensecon = expensecontroller();
 
   // fetch all expenses on component mount
   useEffect(() => {
-    loadExpenses();
+   expensecon.loadExpenses();
+ 
   }, []);
 
   return (
@@ -26,18 +20,27 @@ function ExpenseSection() {
         <h4>Expenses</h4>
         <button
           className="btn btn-outline-primary"
-          onClick={() => setvisible(true)}
+          onClick={() => expensecon.setvisible(true)}
         >
+          
           {/* <FaPlus /> */} Add Expense
         </button>
       </div>
       <DeleteDialog />
       <ExpenseDialog />
-      {loading ? (
+      {expensecon.loading ? (
         <div className="alert alert-info" role="alert">
           Loading expenses, please wait...
         </div>
-      ) : expenses.length === 0 ? (
+      )
+      :expensecon.isservererror ? (
+        <div className="alert alert-danger" role="alert">
+          Server error occurred. Please try again later.
+        </div>
+      )
+      
+      
+      : expensecon.expenses.length === 0 ? (
         <div className="alert alert-warning" role="alert">
           No expenses found. Please add some expenses.
         </div>
@@ -54,7 +57,7 @@ function ExpenseSection() {
             </tr>
           </thead>
           <tbody>
-            {expenses.map((item, i) => (
+            {expensecon.expenses.map((item, i) => (
               <tr key={item.id || i}>
                 <td>{i + 1}</td>
                 <td>{item.expenseDetails}</td>
@@ -71,7 +74,7 @@ function ExpenseSection() {
 
                   <button
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => setvisiblefordelete(true, item.id)} // open delete dialog)}
+                    onClick={() => expensecon.setvisiblefordelete(true, item.id)} // open delete dialog)}
                   >
                     {/* <FaTrash /> */} Delete
                   </button>
