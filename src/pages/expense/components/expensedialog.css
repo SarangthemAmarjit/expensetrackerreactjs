@@ -1,6 +1,7 @@
 .form {
     margin-left: 10px;
     margin-right: 10px;
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -12,3 +13,6 @@
     padding-left: 0 !important;
 }
 
+.form-control {
+    height: 45px;
+}

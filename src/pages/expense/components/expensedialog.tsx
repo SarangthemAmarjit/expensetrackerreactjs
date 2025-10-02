@@ -31,6 +31,7 @@ function ExpenseDialog() {
             name="expenseDetails"
             value={expensecon.form.expenseDetails}
             onChange={expensecon.handlechange}
+
           />
           {expensecon.errors.expenseDetails && (
             <span className="text-danger">{expensecon.errors.expenseDetails}</span>
@@ -48,6 +49,7 @@ function ExpenseDialog() {
             <span className="text-danger">{expensecon.errors.amount}</span>
           )}
           <Dropdown
+
             name="category"
             value={expensecon.form.category}
             onChange={expensecon.handlechange}
@@ -59,7 +61,8 @@ function ExpenseDialog() {
             <span className="text-danger">{expensecon.errors.category}</span>
           )}
 
-          <div style={{ marginTop: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+
             <button
               type="button"
               onClick={() => expensecon.setvisible(false)}
