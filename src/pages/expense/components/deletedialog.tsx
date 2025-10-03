@@ -2,11 +2,11 @@
 
 import { Dialog } from "primereact/dialog";
 
-import { expensecontroller } from "../../../controller/pagecontontroller";
+import { expensecontroller } from "../../../controller/expensecontontroller";
 import "./expensedialog.css"; // ensure the path is correct
 
 function DeleteDialog() {
-const expensecon = expensecontroller();
+  const expensecon = expensecontroller();
 
   return (
     <>

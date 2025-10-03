@@ -1,17 +1,25 @@
 import { create } from "zustand";
 import type { ExpenseModel, FormErrors } from "../model/expensemodel";
-import { addExpense, deleteExpense, getExpenses } from "../services/expense";
+import {
+  addExpense,
+  deleteExpense,
+  getExpenses,
+  updateExpense,
+} from "../services/expense";
 
 interface PageState {
   selectedexpenseId?: number;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
- 
- 
-  setvisible: (visible: boolean) => void;
+  iseditexpense: boolean;
+
+  setvisible: (visible: boolean, isedit?: boolean) => void;
   setvisiblefordelete: (visible: boolean, id?: number) => void;
   setform: (form: any) => void;
   form: ExpenseModel;
+  resetform: () => void;
+
+  setselectedexpense: (selectedexpense: ExpenseModel) => void;
   seterror: (errors: FormErrors) => void;
   errors: FormErrors;
   expenses: any[];
@@ -27,13 +35,27 @@ interface PageState {
   ) => void;
   handleSubmit: (e: React.FormEvent) => void;
   onconfirm: (form: ExpenseModel) => void;
-  updateExpense: (id: number) => Promise<void>;
+  onupdateconfirm: (form: ExpenseModel) => void;
+
   removeExpense: () => Promise<void>;
   validate: () => FormErrors;
 }
 
 export const expensecontroller = create<PageState>((set, get) => ({
+  resetform: () =>
+    set({
+      form: {
+        expenseDetails: "",
+        amount: 0,
+        category: "",
+        expenseDate: new Date().toISOString(),
+      },
+    }),
+  setselectedexpense: (selectedexpense: ExpenseModel) => {
+    set({ selectedexpenseId: selectedexpense.id, form: selectedexpense });
+  },
   isservererror: false,
+  iseditexpense: false,
   selectedCategory: "",
   setSelectedCategory: (category) => set({ selectedCategory: category }),
 
@@ -58,8 +80,8 @@ export const expensecontroller = create<PageState>((set, get) => ({
   },
   setform: (form) => set({ form: form }),
 
-  
-  setvisible: (visible) => set({ isvisible: visible }),
+  setvisible: (visible, isedit) =>
+    set({ isvisible: visible, iseditexpense: isedit }),
 
   loadExpenses: async () => {
     set({ loading: true });
@@ -74,8 +96,6 @@ export const expensecontroller = create<PageState>((set, get) => ({
       set({ loading: false });
     }
   },
-
-  updateExpense: async (id: number) => { },
 
   removeExpense: async () => {
     const { selectedexpenseId, loadExpenses } = get();
@@ -95,7 +115,11 @@ export const expensecontroller = create<PageState>((set, get) => ({
       set({ errors: validationErrors }); // FIXED: Using set directly
     } else {
       console.log("Form is valid, submitting:", get().form);
-      get().onconfirm(get().form);
+      if (get().iseditexpense) {
+        get().onupdateconfirm(get().form);
+      } else {
+        get().onconfirm(get().form);
+      }
     }
   },
 
@@ -103,6 +127,27 @@ export const expensecontroller = create<PageState>((set, get) => ({
     addExpense(form)
       .then((response) => {
         console.log("Expense added successfully:", response);
+        get().loadExpenses();
+        set({
+          isvisible: false,
+          errors: {}, // Clear errors on success
+          form: {
+            expenseDetails: "",
+            amount: 0,
+            category: "",
+            expenseDate: new Date().toISOString(),
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error adding expense:", error);
+      });
+  },
+
+  onupdateconfirm: (form: ExpenseModel) => {
+    updateExpense(get().selectedexpenseId!, form)
+      .then((response) => {
+        console.log("Expense Upated successfully:", response);
         get().loadExpenses();
         set({
           isvisible: false,

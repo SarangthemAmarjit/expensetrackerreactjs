@@ -4,7 +4,7 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 
 import { expenseCategories } from "../../../constant/conts";
-import { expensecontroller } from "../../../controller/pagecontontroller";
+import { expensecontroller } from "../../../controller/expensecontontroller";
 import "./expensedialog.css"; // ensure the path is correct
 
 function ExpenseDialog() {
@@ -14,7 +14,7 @@ function ExpenseDialog() {
     <>
       <Dialog
         draggable={false}
-        header="Add New Expense"
+        header={expensecon.iseditexpense ? "Update Expense" : "Add New Expense"}
         visible={expensecon.isvisible}
         style={{ width: "30vw" }}
         onHide={() => {
@@ -31,10 +31,11 @@ function ExpenseDialog() {
             name="expenseDetails"
             value={expensecon.form.expenseDetails}
             onChange={expensecon.handlechange}
-
           />
           {expensecon.errors.expenseDetails && (
-            <span className="text-danger">{expensecon.errors.expenseDetails}</span>
+            <span className="text-danger">
+              {expensecon.errors.expenseDetails}
+            </span>
           )}
 
           <input
@@ -49,7 +50,6 @@ function ExpenseDialog() {
             <span className="text-danger">{expensecon.errors.amount}</span>
           )}
           <Dropdown
-
             name="category"
             value={expensecon.form.category}
             onChange={expensecon.handlechange}
@@ -61,8 +61,13 @@ function ExpenseDialog() {
             <span className="text-danger">{expensecon.errors.category}</span>
           )}
 
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
-
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "20px",
+            }}
+          >
             <button
               type="button"
               onClick={() => expensecon.setvisible(false)}
@@ -76,7 +81,7 @@ function ExpenseDialog() {
               onClick={expensecon.handleSubmit}
               className="btn btn-outline-primary"
             >
-              Submit
+              {expensecon.iseditexpense ? "Update" : "Submit"}
             </button>
           </div>
         </form>

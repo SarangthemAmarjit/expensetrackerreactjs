@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import { expensecontroller } from "../../controller/pagecontontroller";
+import { expensecontroller } from "../../controller/expensecontontroller";
 import DeleteDialog from "./components/deletedialog";
 import ExpenseDialog from "./components/expensedialog";
 import "./expense.css"; // ensure the path is correct
 // import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 
 function ExpenseSection() {
-const expensecon = expensecontroller();
+  const expensecon = expensecontroller();
 
   // fetch all expenses on component mount
   useEffect(() => {
-   expensecon.loadExpenses();
- 
+    expensecon.loadExpenses();
   }, []);
 
   return (
@@ -20,9 +19,11 @@ const expensecon = expensecontroller();
         <h4>Expenses</h4>
         <button
           className="btn btn-outline-primary"
-          onClick={() => expensecon.setvisible(true)}
+          onClick={function () {
+            expensecon.resetform();
+            return expensecon.setvisible(true, false);
+          }}
         >
-          
           {/* <FaPlus /> */} Add Expense
         </button>
       </div>
@@ -32,15 +33,11 @@ const expensecon = expensecontroller();
         <div className="alert alert-info" role="alert">
           Loading expenses, please wait...
         </div>
-      )
-      :expensecon.isservererror ? (
+      ) : expensecon.isservererror ? (
         <div className="alert alert-danger" role="alert">
           Server error occurred. Please try again later.
         </div>
-      )
-      
-      
-      : expensecon.expenses.length === 0 ? (
+      ) : expensecon.expenses.length === 0 ? (
         <div className="alert alert-warning" role="alert">
           No expenses found. Please add some expenses.
         </div>
@@ -67,14 +64,19 @@ const expensecon = expensecontroller();
                 <td>
                   <button
                     className="btn btn-outline-primary btn-sm me-2"
-                    onClick={() => alert("Edit expense coming soon")}
+                    onClick={function () {
+                      expensecon.setselectedexpense(item);
+                      return expensecon.setvisible(true, true);
+                    }}
                   >
                     {/* <FaEdit /> */} Edit
                   </button>
 
                   <button
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => expensecon.setvisiblefordelete(true, item.id)} // open delete dialog)}
+                    onClick={() =>
+                      expensecon.setvisiblefordelete(true, item.id)
+                    } // open delete dialog)}
                   >
                     {/* <FaTrash /> */} Delete
                   </button>

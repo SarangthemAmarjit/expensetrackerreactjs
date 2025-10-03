@@ -29,6 +29,10 @@ margin-top: 15px;
     /* grow from the center */
 }
 
+.chartcontainer {
+  gap: 20px;
+}
+
 .card:hover {
     border-color: rgb(161, 192, 241);
     transform: scale(1);
